@@ -1,0 +1,22 @@
+{
+  "name": "hpp-lang-monorepo",
+  "version": "0.5.0",
+  "private": true,
+  "description": "H++, a bilingual educational programming language for autonomous robotics.",
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace=hpp-lang",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.2",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.8"
+  },
+  "license": "MIT"
+}

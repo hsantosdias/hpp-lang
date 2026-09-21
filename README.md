@@ -209,6 +209,36 @@ The simulator currently uses H++ as its standard programming language for autono
 
 The language was subsequently structured as an independent multidomain architecture so that the same programming model could evolve toward line-following, maze robotics and physical robots.
 
+> The simulator Soccer was the first application laboratory of H++, but the language was designed to exist beyond it.
+
+## 🔢 Versioning
+
+Core, extensions and host apps version independently:
+
+| Artifact | Version |
+|---|---|
+| H++ core | `0.5.0` |
+| soccer extension | `0.3.0` |
+| line extension | `0.1.0` |
+| maze extension | `0.1.0` |
+
+See `docs/VERSIONING.md` and `CHANGELOG.md`.
+
+## 🗺️ Roadmap
+
+- Harden the maze domain with a first host (simulated or physical).
+- Line-follower bench programs validated against `MockLineHardware`.
+- Host adapters for RP2040 / ESP32 physical robots.
+- Simulator consumes `hpp-lang` from NPM instead of a vendored copy.
+- New domains (`sumo`, `rescue`, …) as pure extensions — core untouched.
+
+## 🤝 Contributing
+
+1. Preserve behavior first (`PRESERVE` before `IMPROVE`).
+2. Core changes require bilingual aliases, PT errors and tests.
+3. New domains ship as extensions with mock hardware, examples and gate tests.
+4. Keep `npm run typecheck`, `npm run build` and `npm test` green.
+
 ## 📜 License
 
 MIT
