@@ -4,13 +4,23 @@ import { ExtensionDescriptor } from '../../capabilities.js';
  * Extensão Soccer (primeiro domínio, §10): descreve o vocabulário soccer
  * sem tocar no parser — sensores chegam por snapshot, ações pelo `Hardware`.
  */
-export const SOCCER_EXT_VERSION = '0.3.0';
+export const SOCCER_EXT_VERSION = '0.4.0';
 
 export const SOCCER_EXTENSION: ExtensionDescriptor = {
   id: 'soccer',
   version: SOCCER_EXT_VERSION,
   domain: 'Soccer Infrared',
-  capabilities: ['motor', 'encoder', 'compass', 'distance_sensor', 'ball_sensor', 'radio', 'kicker', 'dribbler', 'line_sensor'],
+  /**
+   * Soccer declara o drivetrain diferencial do simulador (`MOTORES`) e
+   * odometria por encoder (§15/§18). NÃO declara `motor_individual`/
+   * `motor_left`/`motor_right`: o modelo simulado não tem rodas independentes
+   * reais — `MOTOR_ESQUERDO` é barrado de propósito (§10/§32).
+   */
+  capabilities: [
+    'motor', 'differential_drive', 'encoder',
+    'compass', 'distance_sensor', 'ball_sensor',
+    'radio', 'kicker', 'dribbler', 'line_sensor'
+  ],
   sensors: [
     'ver_bola', 'see_ball',
     'direcao_bola', 'ball_dir',
@@ -27,6 +37,9 @@ export const SOCCER_EXTENSION: ExtensionDescriptor = {
     'linha_tras', 'line_back',
     'linha_esq', 'line_left',
     'linha_dir', 'line_right',
+    'encoder', 'odometria', 'odometry',
+    'velocidade', 'speed',
+    'velocidade_angular', 'angular_speed',
     'tempo', 'time',
     'tempo_total', 'total_time',
     'placar_eu', 'my_score',
@@ -74,6 +87,9 @@ export const SOCCER_EXTENSION: ExtensionDescriptor = {
     linha_esq: ['line_sensor'],
     line_left: ['line_sensor'],
     linha_dir: ['line_sensor'],
-    line_right: ['line_sensor']
+    line_right: ['line_sensor'],
+    encoder: ['encoder'],
+    odometria: ['odometry'],
+    odometry: ['odometry']
   }
 };

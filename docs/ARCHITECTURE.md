@@ -17,9 +17,11 @@ Interpreter (`src/interpreter.ts`)
     ↓
 HppRuntime (`src/runtime.ts`)
     ↓
-Robotics (`src/robotics/`, `src/hardware.ts`, `src/capabilities.ts`)
+Robotics (`src/hardware.ts`, `src/capabilities.ts`, `src/runtime.ts`)
     ↓
-Capabilities gate (`checkProgramActions`)
+Robotics Motion (`src/robotics/` — contracts, 21 primitives, clock)
+    ↓
+Capabilities gate (`checkProgramActions` + `MOTION_REQUIREMENTS`)
     ↓
 Extension (`src/extensions/soccer|line|maze`)
     ↓
@@ -42,6 +44,11 @@ Core ≠ Robotics ≠ Domain ≠ Simulator
   robotics concepts — `Hardware` contract, `SensorSnapshot`, canonical
   actions, capability model, `HppRuntime` (cycle clock + capability gate +
   version info). Still domain-free: no soccer, no line, no maze.
+  `robotics/{contracts,motion,index}.ts` is the **Motion** sub-layer: 21
+  universal primitives (basic/temporal/spatial/motor/advanced), the
+  non-blocking `dt` clock, the movement state sensors and
+  `MOTION_REQUIREMENTS` (OR semantics) — shared by every domain
+  (`docs/MOTION.md`).
 - **Domain extensions** (`extensions/soccer`, `extensions/line`,
   `extensions/maze`): an `ExtensionDescriptor`
   `{ id, version, domain, capabilities, sensors, actions, requires?,

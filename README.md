@@ -13,6 +13,9 @@ H++ was originally created as the programming language of the **SimuladorSoccerI
 * 🇧🇷 Portuguese syntax with 🇺🇸 English aliases
 * 🧩 Text and visual-block programming
 * 🤖 Robotics-oriented actions and sensors
+* 🧭 21 universal motion primitives (basic, temporal, spatial, motors)
+* 🕒 Non-blocking movement on a deterministic clock (`ANDAR_POR`, `ESPERAR`)
+* 📏 Real-distance motion that never fakes arrival (`ANDAR_METROS`, `GIRAR_GRAUS`)
 * 🔄 Deterministic cycle-based execution
 * 🧠 Persistent variables between control cycles
 * 🛡️ Execution fuel to prevent infinite loops
@@ -185,6 +188,7 @@ This makes it possible to express:
 ## 📚 Documentation
 
 * `docs/LANGUAGE.md` — language reference
+* `docs/MOTION.md` — movement primitives (normative)
 * `docs/ARCHITECTURE.md` — architecture
 * `docs/RUNTIME.md` — runtime model
 * `docs/HARDWARE.md` — hardware abstraction
@@ -199,7 +203,7 @@ This makes it possible to express:
 npm test
 ```
 
-The project maintains isolated tests for the language core, runtime, robotics contracts and domain extensions.
+The project maintains isolated tests for the language core, runtime, robotics contracts, motion primitives and domain extensions (174 tests).
 
 ## 🌱 Origin
 
@@ -217,10 +221,11 @@ Core, extensions and host apps version independently:
 
 | Artifact | Version |
 |---|---|
-| H++ core | `0.5.0` |
-| soccer extension | `0.3.0` |
-| line extension | `0.1.0` |
-| maze extension | `0.1.0` |
+| H++ core | `0.6.0` |
+| Robotics Motion layer | `0.1.0` |
+| soccer extension | `0.4.0` |
+| line extension | `0.2.0` |
+| maze extension | `0.2.0` |
 
 See `docs/VERSIONING.md` and `CHANGELOG.md`.
 

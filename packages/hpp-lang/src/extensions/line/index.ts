@@ -7,21 +7,28 @@ import { Hardware, SensorValue } from '../../hardware.js';
  * mesmo interpretador, sem nenhum outro domínio em nenhum import daqui.
  */
 
-export const LINE_EXT_VERSION = '0.1.0';
+export const LINE_EXT_VERSION = '0.2.0';
 
 export const LINE_EXTENSION: ExtensionDescriptor = {
   id: 'line',
   version: LINE_EXT_VERSION,
   domain: 'Line Following',
+  /** §17: `line_sensor` + `motor` + `encoder`. Sem nenhum outro domínio daqui. */
   capabilities: ['motor', 'encoder', 'line_sensor'],
   sensors: [
     'linha_esq', 'line_left',
     'linha_centro', 'line_center',
     'linha_dir', 'line_right',
     'erro_linha', 'line_error',
+    'encoder', 'odometria', 'odometry',
     'ciclo', 'cycle'
   ],
-  actions: ['drive', 'turn', 'stop']
+  actions: ['drive', 'turn', 'stop'],
+  sensorRequires: {
+    encoder: ['encoder'],
+    odometria: ['odometry'],
+    odometry: ['odometry']
+  }
 };
 
 /** Leitura de N sensores de refletância (0 = branco, 1 = preto). */

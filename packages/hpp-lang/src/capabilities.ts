@@ -5,15 +5,34 @@
  * Ex.: Soccer tem {motor, ball_sensor, kicker, ...}; Line tem {motor, line_sensor}.
  */
 import type { ActionName, ActionSpec } from './tokens.js';
+import { ACTION_PT } from './tokens.js';
 import type { Stmt, Expr } from './ast.js';
+import { isMotionAction, missingMotionCapability } from './robotics/motion.js';
+
+/**
+ * O que um robô/hardware declara possuir. As cinco primeiras famílias são
+ * as da camada Robotics (§20); o resto é capability de domínio.
+ */
 export type Capability =
+  // locomoção / motores
   | 'motor'
+  | 'motor_individual'
+  | 'motor_left'
+  | 'motor_right'
+  | 'differential_drive'
+  | 'holonomic_drive'
+  // odometria
   | 'encoder'
-  | 'distance_sensor'
-  | 'line_sensor'
+  | 'odometry'
+  // orientação
   | 'imu'
   | 'compass'
+  // sensores
+  | 'distance_sensor'
+  | 'wall_detector'
+  | 'line_sensor'
   | 'ball_sensor'
+  // domínio soccer
   | 'radio'
   | 'kicker'
   | 'dribbler';
@@ -30,7 +49,9 @@ export interface ExtensionDescriptor {
   capabilities: Capability[];
   /** Chaves de sensores (minúsculas) que a extensão define. */
   sensors: string[];
-  /** Ações H++ (canônicas) que a extensão suporta. */
+  /** Ações de DOMÍNIO que a extensão suporta. As primitivas Robotics
+   * (ANDAR/VOLTAR/PARAR/GIRAR/ESPERAR/…) não precisam ser listadas: valem
+   * em todo domínio (§33). */
   actions: string[];
   /**
    * Capacidades exigidas por ação (passo incremental rumo a descritores
@@ -65,18 +86,6 @@ export function missingCapabilitiesMessage(missing: Capability[], extensionId: s
     `troque de robô ou adapte o programa.`
   );
 }
-
-/** Nome de exibição PT da ação canônica (p/ mensagens pedagógicas). */
-const ACTION_PT: Record<ActionName, string> = {
-  drive: 'ANDAR',
-  turn: 'GIRAR',
-  kick: 'CHUTAR',
-  stop: 'PARAR',
-  aimBall: 'MIRAR_BOLA',
-  aimGoal: 'MIRAR_GOL',
-  radioSend: 'ENVIAR_RADIO',
-  dribble: 'DRIBLAR'
-};
 
 /** Coleta os nomes canônicos de ação usados num programa (AST já compilada). */
 export function collectProgramActions(statements: Stmt[]): ActionName[] {
@@ -114,9 +123,13 @@ export function collectProgramActions(statements: Stmt[]): ActionName[] {
 /**
  * Verifica se um programa cabe nas capacidades do hardware (§9/§32).
  * Retorna mensagem pedagógica ou null se OK. Não executa nada.
- * Três barreiras: ação fora do vocabulário da extensão, capacidades
- * exigidas (via `requires`) ausentes no hardware, e SENSORES exigidos
- * (via `sensorRequires`) ausentes. Sem entrada = sem verificação.
+ * Quatro barreiras:
+ * 1. ação fora do vocabulário da extensão — **exceto** as primitivas
+ *    Robotics, que valem em qualquer domínio (§33);
+ * 2. capacidades exigidas (via `requires`, semântica E) ausentes;
+ * 3. capacidades da primitiva de movimento ausentes (semântica OU, §8);
+ * 4. SENSORES exigidos (via `sensorRequires`) ausentes.
+ * Sem entrada = sem verificação.
  */
 export function checkProgramActions(
   statements: Stmt[],
@@ -124,17 +137,20 @@ export function checkProgramActions(
   extension: Pick<ExtensionDescriptor, 'id' | 'actions' | 'requires' | 'sensors' | 'sensorRequires'>
 ): string | null {
   const missing = new Set<Capability>();
+  const anyOf = new Set<Capability>();
   const lacking: string[] = [];
   for (const name of collectProgramActions(statements)) {
-    if (!extension.actions.includes(name)) {
+    if (!isMotionAction(name) && !extension.actions.includes(name)) {
       lacking.push(`${ACTION_PT[name]} (ação desconhecida neste domínio)`);
       continue;
     }
     const need = extension.requires?.[name] ?? [];
     const absent = checkRequirements(have, need);
-    if (absent.length > 0) {
+    const absentAny = missingMotionCapability(name, have) ?? [];
+    if (absent.length > 0 || absentAny.length > 0) {
       lacking.push(ACTION_PT[name]);
       absent.forEach((c) => missing.add(c));
+      absentAny.forEach((c) => anyOf.add(c));
     }
   }
   for (const name of collectProgramSensors(statements, extension.sensors)) {
@@ -146,7 +162,10 @@ export function checkProgramActions(
     }
   }
   if (lacking.length === 0) return null;
-  const caps = missing.size > 0 ? ` (precisa de: ${[...missing].join(', ')})` : '';
+  const needParts: string[] = [];
+  if (missing.size > 0) needParts.push(`precisa de: ${[...missing].join(', ')}`);
+  if (anyOf.size > 0) needParts.push(`precisa de uma entre: ${[...anyOf].join(' ou ')}`);
+  const caps = needParts.length > 0 ? ` (${needParts.join('; ')})` : '';
   return (
     `Este programa usa ${lacking.join(', ')}, ` +
     `mas o robô atual não possui a capacidade necessária${caps}. ` +

@@ -105,6 +105,40 @@ Maze isolated (contracts only, no logic) ... PROVEN (descriptor test, zero socce
 
 - None blocking. `dist/` is git-ignored build output (rebuilt by CI/release).
 
+## Second sync — 2026-09-26 (core 0.5.0 → 0.6.0)
+
+Source: `SimuladorSoccerInfrared` `packages/hpp-lang`, commits `10a61ec..HEAD`
+(`a21abae` examples + `b0c9837` Robotics Motion Primitives; host now
+v1.13.0 — still untouched, `git status` clean).
+
+Applied to the local package (structure preserved):
+
+| Destination | Change |
+|---|---|
+| `src/robotics/{contracts,motion,index}.ts` | **new** — 21 motion primitives, `dt` clock, `MOTION_REQUIREMENTS`, `roboticsProfile` (+`.js` specifiers) |
+| `src/{ast,tokens,lexer,parser,hardware,version,examples,capabilities,runtime}.ts` | taken from source + `.js` specifiers |
+| `src/interpreter.ts` | source version, with `HppError`/`RuntimeError` kept in `errors.ts` (re-exported) |
+| `src/index.ts` | motion exports merged into the expanded local API; `Program.run(hw, fuel, opts?)` |
+| `src/extensions/{soccer,line,maze}/index.ts` | source version, directory layout + `../` → `../../` depth |
+| `tests/{motion,line,maze,soccer}.test.ts` | **new**, import paths rewritten to `../packages/hpp-lang/src/…` |
+| `tests/isolation.test.ts` | source's glob guard **merged with** the local fs guard |
+| `examples/08-motion/*.hpp` | 6 new programs, byte-identical to `EXAMPLES` (now enforced by `tests/examples.test.ts`) |
+| `docs/`, `SPEC/`, `README.md`, `CHANGELOG.md` | 0.6.0 / motion / new versions documented (`docs/MOTION.md` new) |
+
+Local-only adaptations kept (so the guards stay literal, not aspirational):
+
+1. Comments in `tokens.ts`/`interpreter.ts`/`extensions/{line,maze}` reworded
+   to avoid naming a domain — `tests/isolation.test.ts` still asserts the core
+   and the sibling extensions are soccer-free textually.
+2. `CANONICAL_ACTIONS` (`src/robotics/actions.ts`, local facade) extended to
+   all 26 actions with a compile-time `Equals<CanonicalAction, ActionName>`
+   assertion so it can never drift again.
+3. `tsconfig.json` adds `vite/client` to `types` (the source glob guard uses
+   `import.meta.glob`).
+
+Results: `npm run typecheck` PASS · `npm test` **174/174** (was 91) ·
+`npm run build` PASS (`dist/` js + `.d.ts` + maps) · simulator untouched.
+
 ## Next recommended step
 
 Second stage (separate task, simulator repo): make `SimuladorSoccerInfrared`

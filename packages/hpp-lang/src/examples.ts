@@ -684,5 +684,106 @@ SEMPRE
   FIM
 FIM
 `
+  },
+
+  // --- Primitivas de movimento (§29) -------------------------------------
+  {
+    id: 'danca_tempo',
+    name: '13 · Dança com tempo',
+    level: 'Fundamental 1 — movimento temporal',
+    code: `# O temporal NÃO trava o simulador: cada instrução dura o seu tempo
+# e o restante do programa segue rodando em paralelo.
+REPETIR 4 VEZES
+  ANDAR_POR 0.5, 1
+  GIRAR_POR 0.5, 1
+  VOLTAR_POR 0.5, 1
+FIM
+PARAR
+`
+  },
+  {
+    id: 'simples',
+    name: '14 · Andar, esperar e parar',
+    level: 'Fundamental 1 — movimento básico',
+    code: `# Três primitivas: anda, espera sem mexer no motor, para.
+ANDAR 0.5
+ESPERAR 2
+PARAR
+`
+  },
+  {
+    id: 'diferencial',
+    name: '15 · Robô diferencial',
+    level: 'Fundamental 1 — controle de motores',
+    code: `# MOTORES recebe o par (esquerda, direita). Valores iguais andam
+# em linha reta; valores opostos giram no próprio eixo.
+MOTORES 0.5, 0.5
+ESPERAR 2
+MOTORES -0.5, 0.5
+ESPERAR 1
+PARAR
+`
+  },
+  {
+    id: 'linha_robotics',
+    name: '16 · Seguidor de linha (primitivas)',
+    level: 'Fundamental 1 — sensores de linha + tempo',
+    code: `# Seguidor de linha usando só primitivas Robotics temporais:
+# cada correção dura um tempo e sozinha já para o robô.
+SE linha_frente ENTAO
+  VOLTAR_POR 0.5, 0.4
+  GIRAR_POR 0.6, 0.3
+SENAO
+  SE linha_dir ENTAO
+    GIRAR_POR 0.5, 0.3
+  SENAO
+    SE linha_esq ENTAO
+      GIRAR_POR -0.5, 0.3
+    SENAO
+      ANDAR 0.5
+    FIM
+  FIM
+FIM
+`
+  },
+  {
+    id: 'maze_robotics',
+    name: '17 · Labirinto com distância real',
+    level: 'Fundamental 2 — espacial + estado do movimento',
+    code: `# Labirinto: só dá um comando novo quando o anterior terminou
+# (movimento_ativo) e mede a parede de verdade antes de decidir.
+ENQUANTO movimento_ativo FACA
+  ESPERAR 0.05
+FIM
+
+SE dist_frente < 0.30 ENTAO
+  GIRAR_POR 0.6, 0.5
+SENAO
+  ANDAR_METROS 0.25
+FIM
+`
+  },
+  {
+    id: 'soccer_robotics',
+    name: '18 · Soccer com primitivas explícitas',
+    level: 'Fundamental 2 — tempo, distância e chute',
+    code: `# O perseguidor de bola, agora com as primitivas novas:
+# GIRAR_POR/ANDAR_POR quando é só aproximar, ANDAR_METROS quando
+# a bola está ao alcance e o encoder mede a chegada de verdade.
+SE ver_bola ENTAO
+  MIRAR_BOLA
+  SE dist_bola > 0.35 ENTAO
+    ANDAR_POR 0.7, 0.5
+  SENAO
+    SE abs(direcao_bola) < 15 ENTAO
+      CHUTAR
+    SENAO
+      ANDAR_METROS 0.15
+    FIM
+  FIM
+SENAO
+  GIRAR_POR 0.4, 0.3
+FIM
+`
   }
 ];

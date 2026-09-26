@@ -1,3 +1,5 @@
+import type { ActionName } from './tokens.js';
+
 /** Árvore sintática do H++ (nós com linha p/ erros amigáveis). */
 export type Expr =
   | { kind: 'num'; value: number; line: number }
@@ -11,7 +13,7 @@ export type Expr =
 export type Stmt =
   | { kind: 'assign'; name: string; expr: Expr; line: number }
   | { kind: 'expr'; expr: Expr; line: number }
-  | { kind: 'action'; name: 'drive' | 'turn' | 'kick' | 'stop' | 'aimBall' | 'aimGoal' | 'radioSend' | 'dribble'; args: Expr[]; line: number }
+  | { kind: 'action'; name: ActionName; args: Expr[]; line: number }
   | { kind: 'if'; cond: Expr; then: Stmt[]; otherwise: Stmt[]; line: number }
   | { kind: 'while'; cond: Expr; body: Stmt[]; line: number }
   | { kind: 'repeat'; count: Expr; body: Stmt[]; line: number }

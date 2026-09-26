@@ -12,7 +12,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "useDefineForClassFields": true,
-    "types": ["vitest/globals", "node"]
+    "types": ["vitest/globals", "vite/client", "node"]
   },
   "include": ["packages/hpp-lang/src", "tests", "examples/**/*.ts"],
   "exclude": ["node_modules", "dist", "**/dist"]

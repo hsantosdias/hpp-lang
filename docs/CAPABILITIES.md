@@ -5,8 +5,9 @@ core to any domain (`src/capabilities.ts`).
 
 ## Capabilities
 
-`motor | encoder | distance_sensor | line_sensor | imu | compass |
-ball_sensor | radio | kicker | dribbler`
+`motor | motor_individual | motor_left | motor_right | differential_drive |
+holonomic_drive | encoder | odometry | imu | compass | distance_sensor |
+wall_detector | line_sensor | ball_sensor | radio | kicker | dribbler`
 
 ## API
 
@@ -30,3 +31,22 @@ ball_sensor | radio | kicker | dribbler`
   `linha_* → line_sensor`.
 - Hosts call the gate at install time (`setSource` pattern): incompatible
   programs are rejected with a pedagogical error instead of failing silently.
+
+## Movement gate (`MOTION_REQUIREMENTS`)
+
+The Robotics Motion layer keeps its own table (`src/robotics/motion.ts`) with
+**OR** semantics — one of the listed capabilities satisfies the action:
+
+| Action | Accepted (OR) |
+|---|---|
+| `driveMeters` / `reverseMeters` | `encoder` \| `odometry` |
+| `turnDegrees` | `encoder` \| `odometry` \| `compass` \| `imu` |
+| `motor` / `motorLeft` / `motorRight` | `motor_individual` \| `motor_left` \| `motor_right` |
+| `motors` | `differential_drive` |
+| `curve` | `motor` |
+| `moveLateral` / `moveXY` | `holonomic_drive` |
+
+The same check runs twice with the same Portuguese message: statically via
+`checkProgramActions` (install time) and at runtime through
+`RunOptions.capabilities` (`docs/MOTION.md` §7). Domain `requires` keeps AND
+semantics, unchanged.

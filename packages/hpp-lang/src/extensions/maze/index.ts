@@ -11,22 +11,38 @@ import { ExtensionDescriptor } from '../../capabilities.js';
  * está na grade. É a única exceção prevista; todo o resto é relativo.
  */
 
-export const MAZE_EXT_VERSION = '0.1.0';
+export const MAZE_EXT_VERSION = '0.2.0';
 
 export const MAZE_EXTENSION: ExtensionDescriptor = {
   id: 'maze',
   version: MAZE_EXT_VERSION,
   domain: 'Maze / Labyrinth',
-  capabilities: ['motor', 'encoder', 'distance_sensor', 'compass'],
+  /** §18/§33: distância, parede, bússola e encoder — sem depender de nenhum outro domínio. */
+  capabilities: ['motor', 'encoder', 'distance_sensor', 'wall_detector', 'compass'],
   sensors: [
     'dist_frente', 'dist_ahead',
     'dist_esq', 'dist_left',
     'dist_dir', 'dist_right',
+    'parede_frente', 'wall_ahead',
+    'parede_esquerda', 'wall_left',
+    'parede_direita', 'wall_right',
     'bussola', 'compass',
+    'encoder', 'odometria', 'odometry',
     'celula_x', 'cell_x',
     'celula_z', 'cell_z'
   ],
-  actions: ['drive', 'turn', 'stop']
+  actions: ['drive', 'turn', 'stop'],
+  sensorRequires: {
+    parede_frente: ['wall_detector'],
+    wall_ahead: ['wall_detector'],
+    parede_esquerda: ['wall_detector'],
+    wall_left: ['wall_detector'],
+    parede_direita: ['wall_detector'],
+    wall_right: ['wall_detector'],
+    encoder: ['encoder'],
+    odometria: ['odometry'],
+    odometry: ['odometry']
+  }
 };
 
 /** Distância em metros numa direção. */

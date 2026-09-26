@@ -1,7 +1,26 @@
 import { describe, it, expect } from 'vitest';
-import { Lexer, Parser, Interpreter, HppRuntime, compile } from '../packages/hpp-lang/src/index';
+import {
+  Lexer,
+  Parser,
+  Interpreter,
+  HppRuntime,
+  compile,
+  HPP_ROBOTICS_VERSION,
+  MOTION_ACTIONS,
+  MOTION_STATE_SENSORS,
+  isMotionAction,
+  missingMotionCapability
+} from '../packages/hpp-lang/src/index';
+import type {
+  MotionAction,
+  MotionCommand,
+  RoboticsProfile,
+  RunOptions,
+  RunResult
+} from '../packages/hpp-lang/src/index';
 import { normalizeSnapshotKeys } from '../packages/hpp-lang/src/robotics/snapshot';
 import { CANONICAL_ACTIONS } from '../packages/hpp-lang/src/robotics/actions';
+import { roboticsProfile } from '../packages/hpp-lang/src/robotics/contracts';
 import type { Hardware } from '../packages/hpp-lang/src/hardware';
 
 function bareHw(): Hardware {
@@ -44,9 +63,27 @@ describe('public API: pipeline pieces are importable from hpp-lang', () => {
   it('canonical action vocabulary is stable', () => {
     expect([...CANONICAL_ACTIONS]).toEqual([
       'drive',
-      'turn',
-      'kick',
+      'reverse',
       'stop',
+      'turn',
+      'turnLeft',
+      'turnRight',
+      'driveFor',
+      'reverseFor',
+      'turnFor',
+      'stopFor',
+      'wait',
+      'driveMeters',
+      'reverseMeters',
+      'turnDegrees',
+      'motor',
+      'motorLeft',
+      'motorRight',
+      'motors',
+      'curve',
+      'moveLateral',
+      'moveXY',
+      'kick',
       'aimBall',
       'aimGoal',
       'radioSend',
@@ -61,5 +98,50 @@ describe('robotics/snapshot: key normalization matches the interpreter', () => {
       bussola: 10,
       ver_bola: true
     });
+  });
+});
+
+
+describe('public API: Robotics Motion Primitives (5-14)', () => {
+  it('motion contract exports are part of the package root', () => {
+    expect(HPP_ROBOTICS_VERSION).toMatch(/^\d+\.\d+\.\d+$/);
+    expect(MOTION_ACTIONS).toHaveLength(21);
+    expect(MOTION_STATE_SENSORS).toEqual(
+      expect.arrayContaining([
+        'esta_andando',
+        'esta_parado',
+        'movimento_ativo',
+        'movimento_concluido'
+      ])
+    );
+  });
+
+  it('isMotionAction separates Robotics primitives from domain actions', () => {
+    expect(isMotionAction('drive')).toBe(true);
+    expect(isMotionAction('driveFor')).toBe(true);
+    expect(isMotionAction('moveXY')).toBe(true);
+    expect(isMotionAction('kick')).toBe(false);
+    expect(isMotionAction('dribble')).toBe(false);
+  });
+
+  it('capability gate for spatial/motor movement is exported', () => {
+    expect(missingMotionCapability('drive', [])).toBeNull();
+    expect(missingMotionCapability('driveMeters', [])).toEqual(['encoder', 'odometry']);
+    expect(missingMotionCapability('driveMeters', ['encoder'])).toBeNull();
+    expect(missingMotionCapability('motors', [])).toEqual(['differential_drive']);
+  });
+
+  it('motion/run types are usable from the package root', () => {
+    const opts: RunOptions = { capabilities: null, dt: 1 / 120 };
+    expect(opts.dt).toBeCloseTo(1 / 120);
+    const action: MotionAction = 'driveFor';
+    expect(MOTION_ACTIONS).toContain(action);
+    const cmd: MotionCommand = { action: 'driveFor', value: 0.5, duration: 1 };
+    expect(cmd.duration).toBe(1);
+    const profile: RoboticsProfile = roboticsProfile(['motor', 'encoder']);
+    expect(profile.motion.timed).toBe(true);
+    expect(profile.motion.spatial).toBe(true);
+    const result: RunResult = { ok: true, steps: 1 };
+    expect(result.ok).toBe(true);
   });
 });

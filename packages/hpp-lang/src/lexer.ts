@@ -35,6 +35,9 @@ export function lex(source: string, opts: LexOptions = {}): { tokens: Token[]; e
   let line = 1;
   let col = 1;
   let depth = 0; // parênteses: vírgula dentro deles é separador (MIN(1,2))
+  // Comando atual com 2+ argumentos (ANDAR_POR 0.5, 2): vírgula é separador,
+  // não decimal. Zera a cada quebra de linha.
+  let multiArgAction = false;
 
   const push = (t: Omit<Token, 'line' | 'col'>, l = line, c = col) => {
     tokens.push({ ...t, line: l, col: c });
@@ -52,6 +55,7 @@ export function lex(source: string, opts: LexOptions = {}): { tokens: Token[]; e
     // Quebra de linha (separador de comandos)
     if (ch === '\n') {
       push({ type: 'NEWLINE', value: '\\n' });
+      multiArgAction = false;
       i++;
       line++;
       col = 1;
@@ -135,9 +139,11 @@ export function lex(source: string, opts: LexOptions = {}): { tokens: Token[]; e
       const act = lookupAction(plain) ?? opts.extraActions?.[plain.toUpperCase()];
       if (act) {
         push({ type: 'ACTION', value: plain.toUpperCase(), action: act }, line, startCol);
+        multiArgAction = act.args >= 2;
         continue;
       }
       push({ type: 'IDENT', value: plain.toLowerCase() }, line, startCol);
+      multiArgAction = false;
       continue;
     }
     // Operadores (2 chars primeiro)
@@ -157,7 +163,7 @@ export function lex(source: string, opts: LexOptions = {}): { tokens: Token[]; e
     if (PUNCT.includes(ch)) {
       // `0,5` fora de parênteses: vírgula colada entre dígitos é quase sempre
       // decimal PT — erro dedicado (dentro de parênteses é separador: MIN(1,2)).
-      if (ch === ',' && depth === 0) {
+      if (ch === ',' && depth === 0 && !multiArgAction) {
         const prevCh = source[i - 1] ?? '';
         const nxt = source[i + 1] ?? '';
         if (/[0-9]/.test(prevCh) && /[0-9]/.test(nxt)) {
@@ -171,6 +177,7 @@ export function lex(source: string, opts: LexOptions = {}): { tokens: Token[]; e
       if (ch === '(') depth++;
       if (ch === ')') depth = Math.max(0, depth - 1);
       push({ type: 'PUNCT', value: ch });
+      if (ch === ';') multiArgAction = false;
       i++;
       col++;
       continue;

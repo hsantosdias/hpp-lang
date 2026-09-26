@@ -325,9 +325,13 @@ export class Parser {
     if (!spec) return null;
     const args: Expr[] = [];
     for (let a = 0; a < spec.args; a++) {
+      // `ANDAR_POR 0.5, 2` / `MOTORES -0.5, 0.5`: vírgula é separadora.
+      // Também aceita sem vírgula (`MOTOR 1 0.5`), como sempre fez o H++.
+      if (a > 0 && this.peek().type === 'PUNCT' && this.peek().value === ',') this.next();
       const e = this.parseExpr();
       if (!e) {
-        this.err(this.peek(), `"${t.value}" precisa de ${spec.args} número(s). Ex.: ${t.value} 0.5`);
+        const ex = spec.args === 2 ? '0.5, 2' : '0.5';
+        this.err(this.peek(), `"${t.value}" precisa de ${spec.args} valor(es). Ex.: ${t.value} ${ex}`);
         return null;
       }
       args.push(e);

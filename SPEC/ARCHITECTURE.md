@@ -1,6 +1,7 @@
 # SPEC — H++ Architecture (normative)
 
-1. Layers: Core (language only) → Robotics (generic contracts) → Domain
+1. Layers: Core (language only) → Robotics (generic contracts, including the
+   Motion sub-layer: 21 primitives + deterministic `dt` clock) → Domain
    extensions (descriptors) → Host adapters (outside this repo).
 2. The core MUST compile and test standalone: no simulator, Three.js,
    React, DOM, UI, or domain imports. Enforced by `tests/isolation.test.ts`.

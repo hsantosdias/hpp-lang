@@ -8,11 +8,12 @@ Core, extensions and host apps version **independently** (semver):
 
 | Artifact | Current | Lives in |
 |---|---|---|
-| H++ core (lexer/parser/AST/interpreter/runtime) | `0.5.0` | `src/version.ts` → `HPP_CORE_VERSION`, npm `hpp-lang@0.5.0` |
-| soccer extension | `0.3.0` | `src/extensions/soccer/index.ts` |
-| line extension | `0.1.0` | `src/extensions/line/index.ts` |
-| maze extension | `0.1.0` | `src/extensions/maze/index.ts` |
-| simulator (host, separate repo) | `1.12.9` | `SimuladorSoccerInfrared/package.json` |
+| H++ core (lexer/parser/AST/interpreter/runtime) | `0.6.0` | `src/version.ts` → `HPP_CORE_VERSION`, npm `hpp-lang@0.6.0` |
+| Robotics Motion layer | `0.1.0` | `src/robotics/motion.ts` → `HPP_ROBOTICS_VERSION` |
+| soccer extension | `0.4.0` | `src/extensions/soccer/index.ts` |
+| line extension | `0.2.0` | `src/extensions/line/index.ts` |
+| maze extension | `0.2.0` | `src/extensions/maze/index.ts` |
+| simulator (host, separate repo) | `1.13.0` | `SimuladorSoccerInfrared/package.json` |
 
 Never use the simulator version as the H++ version.
 

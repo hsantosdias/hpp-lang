@@ -22,9 +22,13 @@ interface ExtensionDescriptor {
 
 | Extension | Version | Status | Capabilities | Actions |
 |---|---|---|---|---|
-| `soccer` | 0.3.0 | production (first lab) | motor, encoder, compass, distance_sensor, ball_sensor, radio, kicker, dribbler, line_sensor | all 8 canonical |
-| `line` | 0.1.0 | minimal + `MockLineHardware` | motor, encoder, line_sensor | drive, turn, stop |
-| `maze` | 0.1.0 | contracts only | motor, encoder, distance_sensor, compass | drive, turn, stop |
+| `soccer` | 0.4.0 | production (first lab) | motor, differential_drive, encoder, compass, distance_sensor, ball_sensor, radio, kicker, dribbler, line_sensor | 5 domain + the 21 motion primitives |
+| `line` | 0.2.0 | minimal + `MockLineHardware` | motor, encoder, line_sensor | drive, turn, stop (+ motion) |
+| `maze` | 0.2.0 | contracts only | motor, encoder, distance_sensor, wall_detector, compass | drive, turn, stop (+ motion) |
+
+The 21 Robotics motion primitives (`docs/MOTION.md`) are available in **every**
+domain without being listed in `actions`; the domain list only gates *domain*
+verbs and the per-action `requires` check.
 
 `line` additionally exports `lineError()` (lateral error −1..1, PID base),
 `LineSensor`/`LineController` contracts and `MockLineHardware` (classroom

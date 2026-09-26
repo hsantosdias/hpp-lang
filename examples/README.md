@@ -12,8 +12,11 @@ Executable `.hpp` programs, organized by domain. Every file must compile with
 | `05-soccer` | soccer | `linha`, `segura`, `atacante_v2`, `atacante_v3`, `atacante_v4` |
 | `06-line` | line | `seguidor` |
 | `07-maze` | maze | `explorador` |
+| `08-motion` | motion | `danca_tempo`, `simples`, `diferencial`, `linha_robotics`, `maze_robotics`, `soccer_robotics` |
 
 The `danca`, `perseguidor`, `goleiro`, `patrulha`, `dupla`, `cola`, `linha`,
-`segura`, `atacante_v2/v3/v4` and `predicados` programs are byte-identical to
-the `EXAMPLES` library shipped in `packages/hpp-lang/src/examples.ts` (the same
-library the simulator loads as default robot programs).
+`segura`, `atacante_v2/v3/v4`, `predicados`, `danca_tempo`, `simples`,
+`diferencial`, `linha_robotics`, `maze_robotics` and `soccer_robotics`
+programs are byte-identical to the `EXAMPLES` library shipped in
+`packages/hpp-lang/src/examples.ts` (the same library the simulator loads as
+default robot programs).

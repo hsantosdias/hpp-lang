@@ -13,10 +13,22 @@ interface Hardware {
   aimSecondary(): void;                   // aim at the secondary target
   radioSend(msg: number): void;
   dribble(on: boolean): void;
+
+  // Optional Robotics Motion methods (§9-§13) — capability-gated.
+  motor?(id: number, value: number): void;      // motor_individual
+  motorLeft?(value: number): void;              // motor_left
+  motorRight?(value: number): void;             // motor_right
+  motors?(left: number, right: number): void;   // differential_drive
+  moveLateral?(value: number): void;            // holonomic_drive
+  moveXY?(vx: number, vy: number): void;        // holonomic_drive
 }
 ```
 
 `SensorValue = number | boolean | string`.
+
+When an optional method is missing, `HppRuntime` hands the interpreter
+`undefined` and the command fails with a Portuguese "not implemented on this
+hardware" error — never a `TypeError`.
 
 ## Rules for adapter authors
 
