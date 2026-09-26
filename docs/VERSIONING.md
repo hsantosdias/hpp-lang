@@ -8,7 +8,8 @@ Core, extensions and host apps version **independently** (semver):
 
 | Artifact | Current | Lives in |
 |---|---|---|
-| H++ core (lexer/parser/AST/interpreter/runtime) | `0.6.0` | `src/version.ts` → `HPP_CORE_VERSION`, npm `hpp-lang@0.6.0` |
+| H++ core (lexer/parser/AST/interpreter/runtime) | `0.6.0` | `src/version.ts` → `HPP_CORE_VERSION` |
+| npm package `hpp-lang` (release/packaging) | `0.6.1` | `packages/hpp-lang/package.json` |
 | Robotics Motion layer | `0.1.0` | `src/robotics/motion.ts` → `HPP_ROBOTICS_VERSION` |
 | soccer extension | `0.4.0` | `src/extensions/soccer/index.ts` |
 | line extension | `0.2.0` | `src/extensions/line/index.ts` |

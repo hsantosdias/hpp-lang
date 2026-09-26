@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.6.1 — 2026-09-26
+
+Packaging and release only — no source changes.
+
+- **Published** `hpp-lang` to the npm registry (public, maintainer `shogann`)
+- Package metadata: `repository`/`homepage`/`bugs`, `keywords`, `engines`,
+  `publishConfig.access`
+- CI: `npm-publish.yml` triggers on `v*` tags and authenticates via npm
+  **Trusted Publishing (OIDC)** — no `NPM_TOKEN` secret required
+- Verified: install straight from the registry plus a runtime/type smoke test
+  (5 programs, PT capability gate, temporal suspension)
+
 ## 0.6.0 — 2026-09-26
 
 Second sync with the simulator (`SimuladorSoccerInfrared` v1.13.0, commits

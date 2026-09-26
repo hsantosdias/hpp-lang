@@ -1,6 +1,6 @@
 {
   "name": "hpp-lang",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "H++, a bilingual educational programming language for autonomous robotics.",
   "type": "module",
   "main": "./dist/index.js",
