@@ -21,5 +21,29 @@
     "build": "tsc -p tsconfig.build.json",
     "prepublishOnly": "npm run build"
   },
+  "keywords": [
+    "hpp",
+    "programming-language",
+    "dsl",
+    "robotics",
+    "simulation",
+    "education",
+    "interpreter"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hsantosdias/hpp-lang.git",
+    "directory": "packages/hpp-lang"
+  },
+  "homepage": "https://github.com/hsantosdias/hpp-lang#readme",
+  "bugs": {
+    "url": "https://github.com/hsantosdias/hpp-lang/issues"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "license": "MIT"
 }
